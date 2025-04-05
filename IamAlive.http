@@ -1,0 +1,6 @@
+@IamAlive_HostAddress = http://localhost:5076
+
+GET {{IamAlive_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
