@@ -1,10 +1,12 @@
 ﻿using IamAlive.DTOs.FriendshipDtos;
 using IamAlive.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IamAlive.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class FriendshipController : ControllerBase
@@ -38,5 +40,17 @@ namespace IamAlive.Controllers
             var friendships = await _friendshipService.GetFriendsForUserAsync(userId);
             return Ok(friendships);
         }
+
+        // DELETE: api/friendship/{userId}/{friendId}
+        [HttpDelete("{userId}/{friendId}")]
+        public async Task<IActionResult> DeleteFriendship(int userId, int friendId)
+        {
+            var success = await _friendshipService.DeleteFriendshipAsync(userId, friendId);
+            if (!success)
+                return NotFound("Friendship not found.");
+
+            return NoContent();
+        }
+
     }
 }

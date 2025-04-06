@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using IamAlive.DTOs.UserDtos;
 using IamAlive.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IamAlive.Controllers
@@ -16,6 +17,27 @@ namespace IamAlive.Controllers
         {
             _userService = userService;
             _mapper = mapper;
+        }
+
+        // GET: api/user
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var allUsers = await _userService.GetAllUsersAsync();
+            return Ok(allUsers);
+        }
+
+        // GET: api/user/{id}
+        [Authorize]
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUserById(int userId)
+        {
+            var user = await _userService.GetUserByIdAsync(userId);
+            if (user == null)
+                return NotFound();
+
+            return Ok(user);
         }
 
         // POST: api/User/register
@@ -36,5 +58,30 @@ namespace IamAlive.Controllers
 
             return Ok(result); // result should be a LoginResponseDto
         }
+
+        // PATCH: api/user/{id}
+        [Authorize]
+        [HttpPatch("{userId}")]
+        public async Task<IActionResult> UpdateUser(int userId, [FromBody] UserUpdateDto updatedData)
+        {
+            var updatedUser = await _userService.UpdateUserAsync(userId, updatedData);
+            if (updatedUser == null)
+                return NotFound();
+
+            return Ok(updatedUser);
+        }
+
+        // DELETE: api/user/{id}
+        [Authorize]
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> SoftDeleteUser(int userId)
+        {
+            var success = await _userService.SoftDeleteUserAsync(userId);
+            if (!success)
+                return NotFound();
+
+            return NoContent(); // 204 — successful but nothing returned
+        }
+
     }
 }

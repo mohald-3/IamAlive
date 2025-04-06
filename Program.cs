@@ -2,6 +2,13 @@ using IamAlive.Data;
 using IamAlive.Services.Implementations;
 using IamAlive.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using IamAlive.Configuration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using IamAlive.Helpers;
+
 
 namespace IamAlive
 {
@@ -12,6 +19,11 @@ namespace IamAlive
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
+            //Token service
+
+            builder.Services.ConfigureJwt(builder.Configuration);
+            builder.Services.AddScoped<ITokenService, TokenService>();
 
             //DB service
             builder.Services.AddDbContext<AppDbContext>(options =>
@@ -28,7 +40,8 @@ namespace IamAlive
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.ConfigureSwagger(builder.Configuration);
+
 
             var app = builder.Build();
 
@@ -41,8 +54,8 @@ namespace IamAlive
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 
