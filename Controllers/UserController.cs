@@ -32,7 +32,6 @@ namespace IamAlive.Controllers
             return Ok(users);
         }
 
-
         // GET: api/user/{id}
         [Authorize]
         [HttpGet("{userId}")]
