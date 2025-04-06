@@ -8,6 +8,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using IamAlive.Helpers;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+
 
 
 namespace IamAlive
@@ -33,6 +36,12 @@ namespace IamAlive
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ICheckInService, CheckInService>();
             builder.Services.AddScoped<IFriendshipService, FriendshipService>();
+
+            //Validator service
+
+            builder.Services.AddFluentValidationAutoValidation();
+            builder.Services.AddFluentValidationClientsideAdapters();
+            builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
             //Automapper
             builder.Services.AddAutoMapper(typeof(Program));

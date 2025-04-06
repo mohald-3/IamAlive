@@ -174,10 +174,8 @@ namespace IamAlive.Services.Implementations
         private string GenerateRefreshToken()
         {
             var randomBytes = new byte[64];
-            using var rng = new System.Security.Cryptography.RNGCryptoServiceProvider();
-            rng.GetBytes(randomBytes);
+            System.Security.Cryptography.RandomNumberGenerator.Fill(randomBytes);
             return Convert.ToBase64String(randomBytes);
         }
-
     }
 }
