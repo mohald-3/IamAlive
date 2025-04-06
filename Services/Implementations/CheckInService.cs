@@ -33,6 +33,12 @@ namespace IamAlive.Services.Implementations
             return createdCheckIn;
         }
 
+        public async Task<CheckInDto?> GetCheckInByIdAsync(int checkInId)
+        {
+            var checkIn = await _appDbContext.CheckIns.FindAsync(checkInId);
+            return checkIn == null ? null : _mapper.Map<CheckInDto>(checkIn);
+        }
+
 
         public async Task<IEnumerable<CheckInDto>> GetCheckInsByUserIdAsync(int userId)
         {
@@ -46,6 +52,17 @@ namespace IamAlive.Services.Implementations
             var mappedCheckInList = _mapper.Map<IEnumerable<CheckInDto>>(userCheckInsFromDatabase);
 
             return mappedCheckInList;
+        }
+
+        public async Task<bool> DeleteCheckInAsync(int checkInId)
+        {
+            var checkIn = await _appDbContext.CheckIns.FindAsync(checkInId);
+            if (checkIn == null)
+                return false;
+
+            _appDbContext.CheckIns.Remove(checkIn);
+            await _appDbContext.SaveChangesAsync();
+            return true;
         }
 
     }

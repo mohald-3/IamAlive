@@ -6,5 +6,7 @@ namespace IamAlive.Services.Interfaces
     {
         Task<FriendshipDto> CreateFriendshipAsync(FriendshipCreateDto friendshipData);
         Task<IEnumerable<FriendshipDto>> GetFriendsForUserAsync(int userId);
+        Task<bool> DeleteFriendshipAsync(int userId, int friendId);
+
     }
 }

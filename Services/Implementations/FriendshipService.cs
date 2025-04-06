@@ -21,12 +21,12 @@ namespace IamAlive.Services.Implementations
 
         public async Task<FriendshipDto> CreateFriendshipAsync(FriendshipCreateDto friendshipData)
         {
-            var existingFriendship = await _appDbContext.Friendships
-                .AnyAsync(friendship =>
-                    friendship.UserId == friendshipData.UserId &&
-                    friendship.FriendId == friendshipData.FriendId);
+            var friendshipAlreadyExists = await _appDbContext.Friendships.AnyAsync(friendship =>
+                (friendship.UserId == friendshipData.UserId && friendship.FriendId == friendshipData.FriendId) ||
+                (friendship.UserId == friendshipData.FriendId && friendship.FriendId == friendshipData.UserId)
+            );
 
-            if (existingFriendship)
+            if (friendshipAlreadyExists)
             {
                 throw new InvalidOperationException("Friendship already exists.");
             }
@@ -46,5 +46,21 @@ namespace IamAlive.Services.Implementations
 
             return _mapper.Map<IEnumerable<FriendshipDto>>(userFriendships);
         }
+
+        public async Task<bool> DeleteFriendshipAsync(int userId, int friendId)
+        {
+            var friendship = await _appDbContext.Friendships
+                .FirstOrDefaultAsync(f =>
+                    (f.UserId == userId && f.FriendId == friendId) ||
+                    (f.UserId == friendId && f.FriendId == userId));
+
+            if (friendship == null)
+                return false;
+
+            _appDbContext.Friendships.Remove(friendship);
+            await _appDbContext.SaveChangesAsync();
+            return true;
+        }
+
     }
 }
