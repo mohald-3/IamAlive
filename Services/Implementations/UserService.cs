@@ -31,6 +31,52 @@ namespace IamAlive.Services.Implementations
             return mappedUserList;
         }
 
+        public async Task<IEnumerable<UserDto>> GetFilteredUsersAsync(string? search, string? sortBy, string? sortOrder, int page = 1, int pageSize = 10)
+        {
+            var query = _appDbContext.Users.AsQueryable();
+
+            // Filter by name, email, or phone
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.ToLower();
+                query = query.Where(u =>
+                    u.FirstName.ToLower().Contains(search) ||
+                    u.LastName.ToLower().Contains(search) ||
+                    u.Email.ToLower().Contains(search) ||
+                    u.Phone.Contains(search));
+            }
+
+            // Sorting
+            switch (sortBy?.ToLower())
+            {
+                case "name":
+                    query = sortOrder == "asc"
+                        ? query.OrderBy(user => user.FirstName).ThenBy(user => user.LastName)
+                        : query.OrderByDescending(user => user.FirstName).ThenByDescending(user => user.LastName);
+                    break;
+                case "email":
+                    query = sortOrder == "asc"
+                        ? query.OrderBy(user => user.Email)
+                        : query.OrderByDescending(user => user.Email);
+                    break;
+                case "created":
+                    query = sortOrder == "asc"
+                        ? query.OrderBy(user => user.AccountCreationTime)
+                        : query.OrderByDescending(user => user.AccountCreationTime);
+                    break;
+                default:
+                    query = query.OrderByDescending(user => user.AccountCreationTime); // Default sort
+                    break;
+            }
+
+            // Pagination 
+            query = query.Skip((page - 1) * pageSize).Take(pageSize);
+
+            var users = await query.ToListAsync();
+            return _mapper.Map<IEnumerable<UserDto>>(users);
+        }
+
+
         public async Task<UserDto?> GetUserByIdAsync(int userId)
         {
             var user = await _appDbContext.Users
