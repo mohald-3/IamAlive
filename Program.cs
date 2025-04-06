@@ -51,8 +51,14 @@ namespace IamAlive
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.ConfigureSwagger(builder.Configuration);
 
-
             var app = builder.Build();
+
+            //Fake data seeder
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                FakeDataSeeder.SeedAsync(dbContext).GetAwaiter().GetResult();
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -69,6 +75,9 @@ namespace IamAlive
             app.MapControllers();
 
             app.Run();
+
+
+
         }
     }
 }
