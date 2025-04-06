@@ -20,13 +20,18 @@ namespace IamAlive.Controllers
         }
 
         // GET: api/user
-        [Authorize]
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetFilteredUsers(
+            [FromQuery] string? search,
+            [FromQuery] string? sort = "created",
+            [FromQuery] string? order = "desc",
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
         {
-            var allUsers = await _userService.GetAllUsersAsync();
-            return Ok(allUsers);
+            var users = await _userService.GetFilteredUsersAsync(search, sort, order, page, pageSize);
+            return Ok(users);
         }
+
 
         // GET: api/user/{id}
         [Authorize]
