@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using IamAlive.DTOs.UserDtos;
-using IamAlive.Services.Interfaces;
+using ApplicationLayer.DTOs.UserDtos;
+using ApplicationLayer.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IamAlive.Controllers
+namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

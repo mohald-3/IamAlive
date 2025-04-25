@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
-namespace IamAlive.Helpers
+namespace API.Helpers
 {
     public static class SwaggerHelper
     {

@@ -1,10 +1,10 @@
-﻿using IamAlive.DTOs.CheckInDtos;
-using IamAlive.Services.Interfaces;
+﻿using ApplicationLayer.DTOs.CheckInDtos;
+using ApplicationLayer.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IamAlive.Controllers
+namespace API.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
